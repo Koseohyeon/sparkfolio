@@ -1,13 +1,113 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #d4eaff, #FDF8E2);
+  }
+  
+  .app {
+    text-align: center;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 25px;
+    /* background: white; */
+  }
+  
+  .navbar a {
+    margin: 0 30px;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    position: relative;
+    transition: color 0.3s ease;
+    font-size: 30px; /* 텍스트 크기 설정 */
+  }
+  
+  .navbar a:hover {
+    background-image: linear-gradient(135deg, #ADD8EB, #DDAFFF);
+    -webkit-background-clip: text;
+    background-clip: text; /* 표준 속성 추가 */
+    color: transparent;
+  }
+  
+  
+  .home, .signup {
+    padding: 20px;
+  }
+  
+  .home h1 {
+    font-size: 24px;
+  }
+  
+  .home p {
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  .computer-screen {
+    margin-top: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    width: 400px;
+    height: 250px;
+    overflow: hidden;
+    margin: 20px auto;
+    position: relative;
+  }
+  
+  .slides {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: calc(400px * 3); /* 슬라이드 개수에 맞춰 수정 */
+  }
+  
+  .slides img {
+    width: 400px;
+    height: 250px;
+    object-fit: cover;
+  }
+  
+  .signup-form {
+    max-width: 300px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .signup-form label {
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .signup-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .signup-form button {
+    padding: 10px;
+    font-size: 16px;
+    background-color: #7f83f3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .signup-form button:hover {
+    background-color: #5c60d3;
+  }
+  
+  footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: gray;
+  }
+  
