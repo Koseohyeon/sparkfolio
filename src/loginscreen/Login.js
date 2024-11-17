@@ -89,12 +89,14 @@ const styles = {
     marginBottom: '20px',
   },
   form: {
-    background: '#fff',
+    background: 'rgba(255, 255, 255, 0.8)',
     borderRadius: '10px',
     padding: '40px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
     width: '90%', // 작은 화면에서도 잘 보이도록 조정
     maxWidth: '400px', // 최대 크기 제한
+
+
   },
   label: {
     display: 'block',
@@ -146,7 +148,7 @@ const styles = {
     cursor: 'pointer',
   },
   footer: {
-    marginTop: '20px',
+    marginTop: '50px',
     fontSize: '14px',
     color: '#999',
     textAlign: 'center',
