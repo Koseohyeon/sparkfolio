@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // useNavigate 추가
+
 
 function SignUp() {
   // 상태 설정
@@ -10,15 +12,23 @@ function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
+  const navigate = useNavigate(); // 네비게이션 훅 사용
+
+
   // 폼 제출 처리
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== passwordConfirm) {
-      alert("Passwords do not match!");
+      alert("비밀번호가 다릅니다!");
       return;
     }
     console.log({ name, email, password, interest });
+
+      // 회원가입 성공 후 로그인 페이지로 이동
+      alert('회원가입이 완료되었습니다!');
+      navigate('/LogIn'); // 로그인 페이지로 이동
   };
+
 
   return (
     <div style={styles.container}>
@@ -27,7 +37,7 @@ function SignUp() {
         <label style={styles.label}>Name</label>
         <input
           type="text"
-          placeholder="Enter your name"
+          placeholder="이름"
           value={name}
           onChange={(e) => setName(e.target.value)}
           style={styles.input}
@@ -46,7 +56,7 @@ function SignUp() {
         <div style={styles.inputContainer}>
           <input
             type={showPassword ? 'text' : 'password'}
-            placeholder="Enter your password"
+            placeholder="비밀번호"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             style={styles.input}
@@ -63,7 +73,7 @@ function SignUp() {
         <div style={styles.inputContainer}>
           <input
             type={showPasswordConfirm ? 'text' : 'password'}
-            placeholder="Confirm your password"
+            placeholder="비밀번호 확인"
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
             style={styles.input}
@@ -79,7 +89,7 @@ function SignUp() {
         <label style={styles.label}>Interest</label>
         <input
           type="text"
-          placeholder="Your interests"
+          placeholder="관심사"
           value={interest}
           onChange={(e) => setInterest(e.target.value)}
           style={styles.input}
