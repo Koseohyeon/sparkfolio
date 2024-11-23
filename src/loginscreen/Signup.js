@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate 추가
+import { signup } from '../api/auth';
 
 
 function SignUp() {
@@ -16,17 +17,34 @@ function SignUp() {
 
 
   // 폼 제출 처리
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== passwordConfirm) {
       alert("비밀번호가 다릅니다!");
       return;
     }
-    console.log({ name, email, password, interest });
 
-      // 회원가입 성공 후 로그인 페이지로 이동
-      alert('회원가입이 완료되었습니다!');
-      navigate('/LogIn'); // 로그인 페이지로 이동
+    try {
+      const profilePhoto = null;
+      const result = await signup(name, email, password, interest, profilePhoto); // API 호출
+      
+      console.log(result); // 응답 확인
+      
+      if (result?.success) {
+        alert(result.message); // "회원가입 성공!" 메시지 출력
+        navigate('/LogIn');
+      } else {
+        alert(`회원가입 실패: ${result?.message || '알 수 없는 오류'}`);
+      }
+    } catch (error) {
+      console.error(error);
+  
+      if (error.response) {
+        alert(`회원가입 실패: ${error.response.data?.message || '잘못된 요청입니다.'}`);
+      } else {
+        alert('네트워크 오류. 다시 시도해주세요.');
+      }
+    }
   };
 
 

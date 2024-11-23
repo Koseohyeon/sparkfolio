@@ -1,31 +1,26 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link,useNavigate  } from 'react-router-dom';
+import { login } from '../api/auth';
 
 function LogIn() {
   // 상태 설정
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate
 
-  // 로그인 처리
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      alert('Email과 Password를 입력해주세요!');
-      return;
-    }
-    // 실제 로그인 로직 (예: API 요청)
-    console.log('로그인 시도:', { email, password });
-
-    // 예시 로직: 로그인 성공/실패 알림
-    if (email === 'test@example.com' && password === '1234') {
-      alert('로그인 성공!');
-    } else {
-      alert('로그인 실패: 이메일 또는 비밀번호를 확인하세요.');
-    }
-  };
-
+ // 로그인 처리
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const result = await login(email, password); // API 호출
+    alert(`로그인 성공! 환영합니다, ${result.name}`);
+    localStorage.setItem('token', result.token); // 토큰 저장
+    navigate('FindJob'); // 로그인 후 대시보드로 이동 (원하는 페이지로 변경)
+  } catch (error) {
+    alert(error.message || '로그인 실패. 다시 시도해주세요.');
+  }
+};
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Log In</h1>

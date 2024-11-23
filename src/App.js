@@ -10,7 +10,7 @@ function App() {
     <Router>
       <div style={styles.app}>
         <nav style={styles.navbar}>
-        <div style={styles.logo}>Sparkfolio</div> {/* 로고 추가 */}
+        <div style={styles.logo}>Sparkfolio</div> 
           <NavLink to="/Home" label="Home" />
           <NavLink to="/FindJob" label="Find a job" />
           <NavLink to="/signup" label="Sign Up" />
