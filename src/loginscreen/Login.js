@@ -16,7 +16,7 @@ function LogIn() {
     const result = await login(email, password); // API 호출
     alert(`로그인 성공! 환영합니다, ${result.name}`);
     localStorage.setItem('token', result.token); // 토큰 저장
-    navigate('FindJob'); // 로그인 후 대시보드로 이동 (원하는 페이지로 변경)
+    navigate('/MyPage'); // 로그인 후 대시보드로 이동 (원하는 페이지로 변경)
   } catch (error) {
     alert(error.message || '로그인 실패. 다시 시도해주세요.');
   }

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from './loginscreen/Home';
 import SignUp from './loginscreen/Signup';
 import LogIn from './loginscreen/Login';
-import FindJob from './Jobscreen/FindJob';
+import MyPage from'./mypagescreen/MyPage';
 
 function App() {
   return (
@@ -12,16 +12,15 @@ function App() {
         <nav style={styles.navbar}>
         <div style={styles.logo}>Sparkfolio</div> 
           <NavLink to="/Home" label="Home" />
-          <NavLink to="/FindJob" label="Find a job" />
           <NavLink to="/signup" label="Sign Up" />
           <NavLink to="/login" label="Log In" />
         </nav>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/Home" element={<Home />} />
-          <Route path="/FindJob" element={<FindJob />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<LogIn />} />
+          <Route path="/MyPage" element={<MyPage />} />
         </Routes>
       </div>
     </Router>
