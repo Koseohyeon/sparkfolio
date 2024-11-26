@@ -12,7 +12,8 @@ const api = axios.create({
 export async function login(email, password) {
   try {
     const response = await api.post('/api/member/login', { email, password });
-    return response.data;
+    const { userData } = response.data; // 사용자 데이터 추출
+    return userData; // userData 반환
   } catch (error) {
     console.error("로그인 에러:", error.response ? error.response.data : error.message);
     throw error.response ? error.response.data : error;
@@ -34,6 +35,16 @@ export async function signup(name, email, password, interest, profilePhoto) {
     return response.data;
   } catch (error) {
     console.error("회원가입 에러:", error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
+  }
+}
+
+export async function getProfile() {
+  try {
+    const response = await api.get('/api/member/profile');
+    return response.data;
+  } catch (error) {
+    console.error("프로필 불러오기 에러:", error.response ? error.response.data : error.message);
     throw error.response ? error.response.data : error;
   }
 }

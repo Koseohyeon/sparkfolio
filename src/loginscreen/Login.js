@@ -9,14 +9,14 @@ function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate
 
- // 로그인 처리
- const handleLogin = async (e) => {
+// 로그인 처리
+const handleLogin = async (e) => {
   e.preventDefault();
   try {
-    const result = await login(email, password); // API 호출
-    alert(`로그인 성공! 환영합니다, ${result.name}`);
-    localStorage.setItem('token', result.token); // 토큰 저장
-    navigate('/MyPage'); // 로그인 후 대시보드로 이동 (원하는 페이지로 변경)
+    const userData = await login(email, password); // API 호출
+    localStorage.setItem("user", JSON.stringify(userData)); // 사용자 정보 로컬 저장
+    alert(`로그인 성공! 환영합니다, ${userData.name}`);
+    navigate('/MyPage'); // MyPage로 이동
   } catch (error) {
     alert(error.message || '로그인 실패. 다시 시도해주세요.');
   }
