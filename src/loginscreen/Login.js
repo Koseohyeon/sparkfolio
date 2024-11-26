@@ -21,6 +21,7 @@ const handleLogin = async (e) => {
     alert(error.message || '로그인 실패. 다시 시도해주세요.');
   }
 };
+
   return (
     <div style={styles.container}>
       <h1 style={styles.title}>Log In</h1>

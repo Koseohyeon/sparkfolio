@@ -20,6 +20,7 @@ export async function login(email, password) {
   }
 }
 
+
 // 회원가입 요청
 export async function signup(name, email, password, interest, profilePhoto) {
   try {
@@ -39,6 +40,7 @@ export async function signup(name, email, password, interest, profilePhoto) {
   }
 }
 
+//프로필 불러오기
 export async function getProfile() {
   try {
     const response = await api.get('/api/member/profile');
@@ -48,3 +50,4 @@ export async function getProfile() {
     throw error.response ? error.response.data : error;
   }
 }
+
