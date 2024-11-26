@@ -1,18 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const ProfilePage = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser)); // 로컬 스토리지에서 사용자 정보 파싱
+    }
+  }, []);
+
+  if (!user) {
+    return <div>Loading...</div>; // 사용자 정보가 없으면 로딩 표시
+  }
+
   return (
     <div style={styles.container}>
       <nav style={styles.nav}>
         <div style={styles.navItem}>🏠</div>
         <div style={styles.navItem}>➕</div>
         <div style={styles.navItem}>📁</div>
-        <div style={styles.navItem}>💼</div>
         <div style={styles.navItem}>👤</div>
       </nav>
       <div style={styles.content}>
         <header style={styles.header}>
-          <h1 style={styles.title}>Welcome</h1>
+        <h1 style={styles.title}>
+  Welcome,<br />
+  <span style={styles.name}>{user.name}</span>
+</h1>
+
           <div style={styles.separator}></div>
         </header>
         <main>
@@ -21,20 +37,20 @@ const ProfilePage = () => {
             <div style={styles.profileInfo}>
               <div style={styles.profilePicture}>
                 <div style={styles.imagePlaceholder}>이미지</div>
-                <p style={styles.name}>Amanda</p>
+                <p style={styles.name}>{user.name}</p>
               </div>
               <div style={styles.infoDetails}>
                 <div style={styles.infoItem}>
                   <label style={styles.label}>Name</label>
-                  <input type="text" value="Amanda" readOnly style={styles.input} />
+                  <input type="text" value={user.name} readOnly style={styles.input} />
                 </div>
                 <div style={styles.infoItem}>
                   <label style={styles.label}>Email</label>
-                  <input type="email" value="Email@gmail.com" readOnly style={styles.input} />
+                  <input type="email" value={user.email} readOnly style={styles.input} />
                 </div>
                 <div style={styles.infoItem}>
                   <label style={styles.label}>Interest</label>
-                  <input type="text" value="Programming" readOnly style={styles.input} />
+                  <input type="text" value={user.interest} readOnly style={styles.input} />
                 </div>
               </div>
             </div>
@@ -104,7 +120,7 @@ const styles = {
     fontSize: '1.5rem',
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: '50px',
+    marginBottom: '30px',
   },
   profileInfo: {
     display: 'flex',
