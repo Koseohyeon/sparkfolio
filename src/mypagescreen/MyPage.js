@@ -1,34 +1,65 @@
 import React, { useEffect, useState } from 'react';
+import { updateUserInfo } from '../api/auth';
+import Navbar from '../components/Navbar';
 
-const ProfilePage = () => {
+const MyPage = () => {
   const [user, setUser] = useState(null);
-
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ name: "", interest: "" });
+  
+// 로컬 스토리지에서 사용자 정보를 불러오기
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); // 로컬 스토리지에서 사용자 정보 파싱
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setFormData({ name: parsedUser.name, interest: parsedUser.interest,email:parsedUser.email });
     }
   }, []);
+   // 사용자 정보가 변경될 때 로컬 스토리지를 업데이트
+   useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  }, [user]);
+
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = async () => {
+    try {
+      // formData를 기반으로 사용자 정보를 업데이트
+      const updatedProfile = { ...user, ...formData }; // user의 기존 데이터와 formData를 합칩니다.
+      const response = await updateUserInfo(updatedProfile); // 수정된 데이터를 바로 전송
+      setUser(response); // 상태 업데이트
+      localStorage.setItem("user", JSON.stringify(response));
+      setIsEditing(false); // 편집 모드 종료
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      alert("프로필 업데이트 실패: " + (error.message || "알 수 없는 오류"));
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   if (!user) {
-    return <div>Loading...</div>; // 사용자 정보가 없으면 로딩 표시
+    return <div>Loading...</div>;
   }
 
   return (
     <div style={styles.container}>
-      <nav style={styles.nav}>
-        <div style={styles.navItem}>🏠</div>
-        <div style={styles.navItem}>➕</div>
-        <div style={styles.navItem}>📁</div>
-        <div style={styles.navItem}>👤</div>
-      </nav>
+       <Navbar />
       <div style={styles.content}>
         <header style={styles.header}>
-        <h1 style={styles.title}>
-  Welcome,<br />
-  <span style={styles.name}>{user.name}</span>
-</h1>
-
+          <h1 style={styles.title}>
+            Welcome,<br />
+            <span style={styles.name}>{user.name}</span>
+          </h1>
           <div style={styles.separator}></div>
         </header>
         <main>
@@ -42,26 +73,54 @@ const ProfilePage = () => {
               <div style={styles.infoDetails}>
                 <div style={styles.infoItem}>
                   <label style={styles.label}>Name</label>
-                  <input type="text" value={user.name} readOnly style={styles.input} />
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    readOnly={!isEditing}
+                    style={styles.input}
+                  />
                 </div>
                 <div style={styles.infoItem}>
-                  <label style={styles.label}>Email</label>
-                  <input type="email" value={user.email} readOnly style={styles.input} />
-                </div>
+  <label style={styles.label}>Email</label>
+  <input
+    type="email"
+    name="email" // name 속성을 추가하여 formData에서 값을 관리할 수 있게 함
+    value={formData.email || ""} // 이메일 값이 없을 경우 빈 문자열로 설정
+    onChange={handleChange}
+    readOnly={!isEditing} // isEditing이 true일 때만 편집 가능
+    style={styles.input}
+  />
+</div>
                 <div style={styles.infoItem}>
                   <label style={styles.label}>Interest</label>
-                  <input type="text" value={user.interest} readOnly style={styles.input} />
+                  <input
+                    type="text"
+                    name="interest"
+                    value={formData.interest}
+                    onChange={handleChange}
+                    readOnly={!isEditing}
+                    style={styles.input}
+                  />
                 </div>
               </div>
             </div>
-            <button style={styles.button}>Edit</button>
+            {!isEditing ? (
+              <button style={styles.button} onClick={handleEdit}>
+                Edit
+              </button>
+            ) : (
+              <button style={styles.button} onClick={handleSave}>
+                Save
+              </button>
+            )}
           </div>
         </main>
       </div>
     </div>
   );
 };
-
 // 스타일 정의
 const styles = {
   container: {
@@ -76,17 +135,6 @@ const styles = {
     boxSizing: 'border-box',
     overflow: 'hidden',
   },
-  nav: {
-    height: '70%',
-    width: '45px',
-    backgroundColor: '#ffffff',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    padding: '10px',
-    boxShadow: '2px 0 8px rgba(0, 0, 0, 0.1)',
-    borderRadius: '10px 0 0 10px',
-  },
   content: {
     height: '67.5%',
     flexGrow: 1,
@@ -97,12 +145,6 @@ const styles = {
     padding: '20px',
     boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
     overflow: 'hidden',
-  },
-  navItem: {
-    marginTop: '10px',
-    fontSize: '20px',
-    textAlign: 'center',
-    cursor: 'pointer',
   },
   header: {
     display: 'flex',
@@ -199,4 +241,4 @@ const styles = {
   },
 };
 
-export default ProfilePage;
+export default MyPage;

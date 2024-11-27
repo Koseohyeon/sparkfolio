@@ -1,26 +1,24 @@
 import React, { useState } from 'react';
-import { Link,useNavigate  } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../api/auth';
 
 function LogIn() {
-  // 상태 설정
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate
+  const navigate = useNavigate();
 
-// 로그인 처리
-const handleLogin = async (e) => {
-  e.preventDefault();
-  try {
-    const userData = await login(email, password); // API 호출
-    localStorage.setItem("user", JSON.stringify(userData)); // 사용자 정보 로컬 저장
-    alert(`로그인 성공! 환영합니다, ${userData.name}`);
-    navigate('/MyPage'); // MyPage로 이동
-  } catch (error) {
-    alert(error.message || '로그인 실패. 다시 시도해주세요.');
-  }
-};
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const userData = await login(email, password);
+      localStorage.setItem("user", JSON.stringify(userData)); // 사용자 정보 로컬 저장
+      alert(`로그인 성공! 환영합니다, ${userData.name}`);
+      navigate('/MyPage');
+    } catch (error) {
+      alert(error.message || '로그인 실패. 다시 시도해주세요.');
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -44,7 +42,7 @@ const handleLogin = async (e) => {
             onChange={(e) => setPassword(e.target.value)}
             style={styles.input}
           />
-          <span 
+          <span
             onClick={() => setShowPassword(!showPassword)}
             style={styles.icon}
           >
@@ -54,10 +52,10 @@ const handleLogin = async (e) => {
 
         <button type="submit" style={styles.button}>Log In</button>
         <div style={styles.signupLink}>
-        회원이 아니신가요?{'    '}
-        <Link to="/Signup" style={styles.link}>
-          회원가입
-        </Link>
+          회원이 아니신가요?{' '}
+          <Link to="/signup" style={styles.link}>
+            회원가입
+          </Link>
         </div>
       </form>
       <footer style={styles.footer}>Sparkfolio</footer>
