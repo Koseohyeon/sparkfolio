@@ -85,13 +85,16 @@ const MyPage = () => {
                 <div style={styles.infoItem}>
   <label style={styles.label}>Email</label>
   <input
-    type="email"
-    name="email" // name 속성을 추가하여 formData에서 값을 관리할 수 있게 함
-    value={formData.email || ""} // 이메일 값이 없을 경우 빈 문자열로 설정
-    onChange={handleChange}
-    readOnly={!isEditing} // isEditing이 true일 때만 편집 가능
-    style={styles.input}
-  />
+  type="email"
+  name="email"
+  value={formData.email || ""}
+  onChange={handleChange}
+  readOnly={!isEditing}
+  style={{
+    ...styles.input,
+    backgroundColor: isEditing ? '#f0f0f0' : 'rgba(255, 255, 255, 0.9)', // Edit 모드에서 회색 배경
+  }}
+/>
 </div>
                 <div style={styles.infoItem}>
                   <label style={styles.label}>Interest</label>
@@ -107,14 +110,26 @@ const MyPage = () => {
               </div>
             </div>
             {!isEditing ? (
-              <button style={styles.button} onClick={handleEdit}>
-                Edit
-              </button>
-            ) : (
-              <button style={styles.button} onClick={handleSave}>
-                Save
-              </button>
-            )}
+  <button
+    style={{
+      ...styles.button,
+      backgroundColor: '#5588FC', // Edit 모드가 아닌 경우 색상
+    }}
+    onClick={handleEdit}
+  >
+    Edit
+  </button>
+) : (
+  <button
+    style={{
+      ...styles.button,
+      backgroundColor: '#8A2BE2', // Edit 모드인 경우 색상
+    }}
+    onClick={handleSave}
+  >
+    Save
+  </button>
+)}
           </div>
         </main>
       </div>
@@ -187,9 +202,7 @@ const styles = {
     marginBottom: '10px',
   },
   name: {
-    marginTop: '50px',
-    fontWeight: 'bold',
-    fontSize:'24px'
+    color: '#5588FC',
   },
   infoDetails: {
     flexGrow: 1,
@@ -223,7 +236,7 @@ const styles = {
   },
   button: {
     padding: '12px 20px',
-    backgroundColor: '#5588FC',
+    backgroundColor: '#5588FC', // 기존 스타일 복원
     color: '#fff',
     border: 'none',
     borderRadius: '8px',

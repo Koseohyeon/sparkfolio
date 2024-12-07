@@ -4,7 +4,7 @@ import Home from './loginscreen/Home';
 import SignUp from './loginscreen/Signup';
 import LogIn from './loginscreen/Login';
 import MyPage from'./mypagescreen/MyPage';
-//import MyPageEdit from'./mypagescreen/MyPageEdit';
+import ResumeUpload from './resumescreen/ResumeUpload';
 
 function App() {
   return (
@@ -22,7 +22,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<LogIn />} />
           <Route path="/MyPage" element={<MyPage />} />
-         {/*  <Route path="/MyPageEdit" element={<MyPageEdit />} /> */}
+          <Route path="/ResumeUpload" element={<ResumeUpload />} />
+        
         </Routes>
       </div>
     </Router>
