@@ -95,7 +95,7 @@ const ResumeUpload = () => {
       <nav style={styles.nav}>
         <Link to="/" style={styles.navItem}>🏠</Link>
         <Link to="/ResumeUpload" style={styles.navItem}>➕</Link>
-        <Link to="/files" style={styles.navItem}>📁</Link>
+        <Link to="/MyResume" style={styles.navItem}>📁</Link>
         <Link to="/Mypage" style={styles.navItem}>👤</Link>
       </nav>
       <div style={styles.content}>

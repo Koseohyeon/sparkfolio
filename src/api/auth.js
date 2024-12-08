@@ -81,37 +81,6 @@ export const updateUserInfo = async (data) => {
     throw error.response ? error.response.data : error;
   }
 };
-// 이력서 등록 요청
-/*export async function uploadResume(resumeData, file) {
-  try {
-    // 로컬 스토리지에서 사용자 정보를 가져와 이메일을 추가
-    const user = JSON.parse(localStorage.getItem("user")); // 사용자 정보가 로컬 스토리지에 저장되어 있다고 가정
-
-    // 사용자 이메일을 resumeData에 추가
-    const updatedResumeData = {
-      ...resumeData,
-      email: user ? user.email : null, // 로컬 스토리지에 사용자 정보가 없으면 null 처리
-    };
-
-    const formData = new FormData(); // FormData 객체 생성
-    formData.append("resumeFile", file); // 파일 추가
-    formData.append("author", updatedResumeData.author); // 작성자 추가
-    formData.append("title", updatedResumeData.title); // 제목 추가
-    formData.append("memo", updatedResumeData.memo); // 메모 추가
-    formData.append("categories", updatedResumeData.categories); // 카테고리 추가
-
-    const response = await api.post("/api/resume", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data", // 멀티파트 데이터 전송 명시
-      },
-    });
-
-    return response.data; // 서버 응답 반환
-  } catch (error) {
-    console.error("이력서 업로드 에러:", error.response ? error.response.data : error.message);
-    throw error.response ? error.response.data : error;
-  }
-};*/
 
 export async function uploadResume(formData) {
   try {
@@ -129,6 +98,16 @@ export async function uploadResume(formData) {
     return response.data; // 서버 응답 반환
   } catch (error) {
     console.error("업로드 중 오류가 발생했습니다:", error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
+  }
+}
+// 이력서 목록 가져오기
+export async function fetchResumes() {
+  try {
+    const response = await api.get('/api/resume/list');
+    return response.data; // 이력서 데이터 반환
+  } catch (error) {
+    console.error("이력서 목록 가져오기 에러:", error.response ? error.response.data : error.message);
     throw error.response ? error.response.data : error;
   }
 }
