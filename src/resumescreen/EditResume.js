@@ -111,7 +111,6 @@ const EditResume = () => {
     } catch (error) {
       
      // alert("수정 중 오류가 발생했습니다: " + error.message);
-     alert("수정완료");
     }
   };
   if (!user) {
@@ -135,7 +134,7 @@ const EditResume = () => {
           <div style={styles.separator}></div>
         </header>
         <main>
-          <h2 style={styles.subtitle}>Register Resume</h2>
+          <h2 style={styles.subtitle}>Edit Resume</h2>
           <form style={styles.form} onSubmit={handleSubmit}>
             <div style={styles.formGroup}>
               <label style={styles.label}>Author</label>
