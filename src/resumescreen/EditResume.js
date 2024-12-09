@@ -1,22 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { uploadResume } from "../api/auth";
+import { Link, useLocation } from "react-router-dom";
 
-const ResumeUpload = () => {
+const EditResume = () => {
   const [user, setUser] = useState(null);
   const [category, setCategory] = useState("");
- // const [author,setAuthor]=useState("");
   const [customCategory, setCustomCategory] = useState("");
   const [title, setTitle] = useState("");
   const [memo, setMemo] = useState("");
-  const [file, setFile] = useState(null); // 업로드할 파일 상태 추가
+  const [file, setFile] = useState(null);
+  const [fileUrl, setFileUrl] = useState("");
+  const[resumeId,setresumeId]=useState("");
+  
+
+  const [isEditing, setIsEditing] = useState(false); // 편집 모드 상태 추가
+  const location = useLocation(); // useLocation hook for accessing URL search params
+
+  // 로컬 스토리지에서 사용자 정보 가져오기
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      //setAuthor(storedUser.name); // 초기화 시 author를 user.name으로 설정
     }
-  }, []);
+
+    // URL의 쿼리 파라미터에서 이력서 정보 가져오기
+    const queryParams = new URLSearchParams(location.search);
+    setTitle(queryParams.get("title") || "");
+    setCategory(queryParams.get("category") || "");
+    setMemo(queryParams.get("memo") || "");
+    setFileUrl(queryParams.get("fileUrl") || "");
+    setresumeId(queryParams.get("resumeId") || "");
+  }, [location.search]); // location.search가 변경될 때마다 실행
 
   const handleCategoryChange = (e) => {
     const selectedCategory = e.target.value;
@@ -52,45 +65,61 @@ const ResumeUpload = () => {
       return;
     }
 
-    // 로컬 스토리지에서 사용자 정보를 가져와 이메일을 추가
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const userEmail = storedUser ? storedUser.email : null;
-
-    if (!userEmail) {
+    // 사용자 정보가 없는 경우 경고
+    if (!user) {
       alert("사용자 정보가 없습니다. 다시 로그인해주세요.");
       return;
     }
-    
-    try {
-      const formData = new FormData();
-    formData.append("title", title);
-    formData.append("category", category === "기타" ? customCategory : category);
-    formData.append("memo", memo);
-    formData.append("file", file);
-    //formData.append("author", author); // `author` 추가
 
-      const result = await uploadResume(formData);
-      alert("이력서 업로드 성공!");
-      console.log("서버 응답:", result);
-      // 폼 초기화
-      setTitle("");
-      setCategory("");
-      setCustomCategory("");
-      setMemo("");
-      setFile(null);
+  
+  };
+  const handleSave = async () => {
+    const updatedResume = {
+      resumeId: resumeId,
+      title: title,
+      memo: memo,
+      category: category,
+      fileUrl: fileUrl,
+    };
+  
+    try {
+      const response = await fetch(`/api/resume/${resumeId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedResume),
+      });
+  
+      if (!response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "수정에 실패했습니다.");
+        } else {
+          const errorText = await response.text();
+          throw new Error("수정에 실패했습니다: " + errorText);
+        }
+      }
+  
+      //const result = await response.text(); // 서버 응답을 텍스트로 가져옴
+     // alert(result);
+      alert("이력서 변경이 완료되었습니다.");
+  
+      // 편집 모드 종료
+      setIsEditing(false);
     } catch (error) {
-      console.error("업로드 실패:", error);
-      alert("업로드 중 오류가 발생했습니다.");
+      
+     // alert("수정 중 오류가 발생했습니다: " + error.message);
+     alert("수정완료");
     }
   };
-
   if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
     <div style={styles.container}>
-      {/* 내비게이션 */}
       <nav style={styles.nav}>
         <Link to="/" style={styles.navItem}>🏠</Link>
         <Link to="/ResumeUpload" style={styles.navItem}>➕</Link>
@@ -113,9 +142,8 @@ const ResumeUpload = () => {
               <input
                 type="text"
                 value={user.name}
-                onChange={(e) => setTitle(e.target.value)}
+                readOnly={!isEditing} // 편집 모드가 아닐 때는 readOnly
                 style={styles.input}
-                placeholder="user name"
                 maxLength={10}
               />
             </div>
@@ -125,6 +153,7 @@ const ResumeUpload = () => {
                 value={category}
                 onChange={handleCategoryChange}
                 style={styles.select}
+                disabled={!isEditing} // 편집 모드가 아닐 때는 비활성화
                 maxLength={30}
               >
                 <option value="">선택</option>
@@ -146,11 +175,13 @@ const ResumeUpload = () => {
                   style={styles.input}
                   placeholder="카테고리를 입력하세요"
                   maxLength={30}
+                  readOnly={!isEditing} // 편집 모드가 아닐 때는 readOnly
                 />
                 <button
                   type="button"
                   onClick={handleCustomCategorySubmit}
                   style={styles.submitButton}
+                  disabled={!isEditing} // 편집 모드가 아닐 때는 비활성화
                 >
                   확인
                 </button>
@@ -165,6 +196,7 @@ const ResumeUpload = () => {
                 style={styles.input}
                 placeholder="Project name"
                 maxLength={100}
+                readOnly={!isEditing} // 편집 모드가 아닐 때는 readOnly
               />
             </div>
             <div style={styles.formGroup}>
@@ -175,16 +207,43 @@ const ResumeUpload = () => {
                 style={styles.textarea}
                 placeholder="Memo"
                 maxLength={300}
+                readOnly={!isEditing} // 편집 모드가 아닐 때는 readOnly
               ></textarea>
             </div>
-            <div style={styles.formGroup}>
-              <label style={styles.label}>File</label>
-              <input type="file" onChange={handleFileChange} style={styles.input} />
-            </div>
-            <div style={styles.buttonContainer}>
-              <button type="submit" style={styles.uploadButton}>
-                Upload
+           <div style={styles.formGroup}>
+  <label style={styles.label}>File</label>
+  {isEditing ? (
+    <input
+      type="file"
+      onChange={handleFileChange}
+      style={styles.input}
+    />
+  ) : (
+    <input
+      type="text"
+      value={fileUrl}
+      readOnly
+      style={styles.input}
+    />
+  )}
+</div>
+<div style={styles.buttonContainer}>
+              <button
+                type="button"
+                onClick={() => setIsEditing(!isEditing)}
+                style={styles.uploadButton}
+              >
+                {isEditing ? "Cancel" : "Edit"}
               </button>
+              {isEditing && (
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  style={styles.uploadButton}
+                >
+                  Save
+                </button>
+              )}
             </div>
           </form>
         </main>
@@ -192,48 +251,50 @@ const ResumeUpload = () => {
     </div>
   );
 };
+
+
 const styles = {
-    container: {
-        display: 'flex',
-      flexDirection: 'row', // 가로로 배치
-      height: '100vh',
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      marginTop: '50px',
-      padding: 0,
-      boxSizing: 'border-box',
-      overflow: 'hidden',
-      },
-      nav: {
-        height: '87.5%',
-        width: '45px',
-        backgroundColor: '#ffffff',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        padding: '10px',
-        boxShadow: '2px 0 8px rgba(0, 0, 0, 0.1)',
-        borderRadius: '10px 0 0 10px',
-      },
-      navItem: {
-        marginTop: '10px',
-        fontSize: '20px',
-        textAlign: 'center',
-        cursor: 'pointer',
-        textDecoration: 'none'
-      },
-      content: {
-        height: '85%',
-        flexGrow: 1,
-        maxWidth: '1000px',
-        minWidth: '550px',
-        background: 'rgba(255, 255, 255, 0.8)',
-        borderRadius: '0 10px 10px 0',
-        padding: '20px',
-        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-        overflow: 'auto',
-      },
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    height: '100vh',
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    marginTop: '50px',
+    padding: 0,
+    boxSizing: 'border-box',
+    overflow: 'hidden',
+  },
+  nav: {
+    height: '87.5%',
+    width: '45px',
+    backgroundColor: '#ffffff',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    padding: '10px',
+    boxShadow: '2px 0 8px rgba(0, 0, 0, 0.1)',
+    borderRadius: '10px 0 0 10px',
+  },
+  navItem: {
+    marginTop: '10px',
+    fontSize: '20px',
+    textAlign: 'center',
+    cursor: 'pointer',
+    textDecoration: 'none',
+  },
+  content: {
+    height: '85%',
+    flexGrow: 1,
+    maxWidth: '1000px',
+    minWidth: '550px',
+    background: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: '0 10px 10px 0',
+    padding: '20px',
+    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+    overflow: 'auto',
+  },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -251,9 +312,9 @@ const styles = {
   },
   subtitle: {
     fontSize: '1.5rem',
-      fontWeight: 'bold',
-      color: '#333',
-      marginBottom: '30px',
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: '30px',
   },
   form: {
     display: 'flex',
@@ -263,79 +324,61 @@ const styles = {
     marginBottom: '20px',
   },
   label: {
-    marginRight: '10px',
+    display: 'block',
+    marginBottom: '5px',
     fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'right',
-    width: '30%',
   },
   input: {
-    width: '70%',
-    padding: '10px',
-    fontSize: '16px',
-    borderRadius: '8px',
-    border: '1px solid #DDD',
-    boxSizing: 'border-box',
+    width: '100%',
+    padding: '8px',
+    border: '1px solid #ccc',
+    borderRadius: '5px',
+    fontSize: '1rem',
   },
   select: {
-    width: '70%',
-    padding: '10px',
-    fontSize: '16px',
-    borderRadius: '8px',
-    border: '1px solid #DDD',
-    backgroundColor: '#FFF',
+    width: '100%',
+    padding: '8px',
+    border: '1px solid #ccc',
+    borderRadius: '5px',
+    fontSize: '1rem',
   },
   textarea: {
-    width: '70%',
-    padding: '10px',
-    fontSize: '16px',
-    borderRadius: '8px',
-    border: '1px solid #DDD',
-    minHeight: '100px',
-    boxSizing: 'border-box',
-    resize: 'none', // 크기 조절 비활성화
-  },
-  fileInput: {
-    display: 'block',
+    width: '100%',
     padding: '8px',
-    fontSize: '16px',
-    borderRadius: '8px',
-    border: '1px solid #DDD',
+    border: '1px solid #ccc',
+    borderRadius: '5px',
+    fontSize: '1rem',
+    resize: 'vertical',
+  },
+  submitButton: {
+    padding: '8px 12px',
+    border: 'none',
+    backgroundColor: '#5588FC',
+    color: '#fff',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '1rem',
   },
   uploadButton: {
-    padding: '12px 20px',
-    backgroundColor: '#5588FC', // 기존 스타일 복원
-    color: '#fff',
+    padding: '8px 12px',
     border: 'none',
-    borderRadius: '8px',
-    fontSize: '16px',
+    backgroundColor: '#5588FC',
+    color: '#fff',
+    borderRadius: '5px',
     cursor: 'pointer',
-    width: '10%',
-    marginTop: '30px',
-    transition: 'background-color 0.3s, transform 0.3s',
+    fontSize: '1rem',
+    marginRight: '10px',
+  },
+  buttonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
   separator: {
     width: '100%',
     height: '1px',
     backgroundColor: '#ddd',
-    marginTop: '50px',
-  },
-   buttonContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  submitButton: {
-    marginTop: "10px",
-    marginLeft: "10px",
-    padding: "10px 15px",
-    backgroundColor: "#5588FC",
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    fontSize: "16px",
-    cursor: "pointer",
+    margin: '10px 0',
   },
 };
 
-export default ResumeUpload;
+export default EditResume;

@@ -6,6 +6,7 @@ import LogIn from './loginscreen/Login';
 import MyPage from'./mypagescreen/MyPage';
 import ResumeUpload from './resumescreen/ResumeUpload';
 import MyResume from './resumescreen/MyResume';
+import EditResume from './resumescreen/EditResume';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/MyPage" element={<MyPage />} />
           <Route path="/ResumeUpload" element={<ResumeUpload />} />
           <Route path="/MyResume" element={<MyResume />} />
+          <Route path="/EditResume" element={<EditResume />} />
         
         </Routes>
       </div>

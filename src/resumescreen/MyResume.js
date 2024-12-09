@@ -20,6 +20,7 @@ const MyResume = () => {
     const loadResumes = async () => {
       try {
         const data = await fetchResumes(); // API 호출
+        console.log(data); // 데이터 확인
         setResumes(data);
       } catch (error) {
         console.error("이력서 데이터를 가져오는 중 오류 발생:", error);
@@ -75,9 +76,16 @@ const MyResume = () => {
               </tr>
             </thead>
             <tbody>
-              {displayedResumes.map((resume, index) => (
+            {displayedResumes.map((resume, index) => (
                 <tr key={index} style={styles.tr}>
-                  <td style={styles.td}>{resume.title}</td>
+                  <td style={styles.td}>
+                    <Link
+                       to={`/EditResume?resumeId=${encodeURIComponent(resume.id)}&title=${encodeURIComponent(resume.title)}&category=${encodeURIComponent(resume.category)}&memo=${encodeURIComponent(resume.memo)}&fileUrl=${encodeURIComponent(resume.fileUrl)}`}
+                      style={styles.link}
+                    >
+                      {resume.title}
+                    </Link>
+                  </td>
                   <td style={styles.td}>{resume.category}</td>
                   <td style={styles.td}>
                     <a href={`/${resume.fileUrl}`} style={styles.link} download>

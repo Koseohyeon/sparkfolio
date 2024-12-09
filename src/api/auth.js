@@ -90,6 +90,7 @@ export async function uploadResume(formData) {
     // formData에 사용자 이메일을 추가
     formData.append('email', user ? user.email : null);
 
+
     const response = await axios.post("/api/resume/upload", formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -105,6 +106,7 @@ export async function uploadResume(formData) {
 export async function fetchResumes() {
   try {
     const response = await api.get('/api/resume/list');
+    
     return response.data; // 이력서 데이터 반환
   } catch (error) {
     console.error("이력서 목록 가져오기 에러:", error.response ? error.response.data : error.message);

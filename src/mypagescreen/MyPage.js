@@ -67,7 +67,7 @@ const MyPage = () => {
           <div style={styles.f}>
             <div style={styles.profileInfo}>
               <div style={styles.profilePicture}>
-                <div style={styles.imagePlaceholder}>이미지</div>
+                <div style={styles.imagePlaceholder}>{user.name}</div>
                 <p style={styles.name}>{user.name}</p>
               </div>
               <div style={styles.infoDetails}>
@@ -203,6 +203,9 @@ const styles = {
   },
   name: {
     color: '#5588FC',
+    fontSize:'25px',
+    fontWeight: 'bold',
+    
   },
   infoDetails: {
     flexGrow: 1,
